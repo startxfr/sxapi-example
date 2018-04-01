@@ -27,6 +27,7 @@ git clone https://github.com/startxfr/sxapi-example.git
 cd sxapi-example
 docker build -t sxapi-example .
 docker run -p 8080:8080 sxapi-example
+```
 
 ## Running this example using s2i
 
@@ -39,9 +40,8 @@ or [MacOS](https://github.com/openshift/source-to-image#for-mac).
 ### Create application using s2i build
 
 ```bash
-s2i build https://github.com/startxfr/sxapi-example startxfr/sxapi sxapi-example
+s2i build https://github.com/startxfr/sxapi-example startx/sxapi sxapi-example
 docker run -p 8080:8080 sxapi-example
-```
 ```
 
 ## Running this example using openshift
