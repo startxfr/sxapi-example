@@ -7,11 +7,46 @@ The easyest way to start building you own API resource is to fork this repositor
 Follow the [sxapi configuration guide](https://github.com/startxfr/sxapi-core/blob/master/docs/guides/2.Configure.md) to learn
 how to create your own microservice endpoints winthin a minute.
 
-## Running this example
 
-### Running on openshift 
+## Running this example using docker
 
-#### Requirements
+### Requirements
+
+- You must have access to a running `docker` daemon with access to the dockerhub public registry.
+  If you don't have docker runtime, please follow [docker](https://docs.docker.com/)
+  installation guide for [CentOS](https://docs.docker.com/install/linux/docker-ce/centos/), 
+  [RHEL](https://docs.docker.com/install/linux/docker-ee/rhel/), 
+  [Windows](https://docs.docker.com/docker-for-windows/install/)
+  or [MacOS](https://docs.docker.com/docker-for-mac/install/).
+- You must also have `git` tool installed to clone and work with application source code.
+
+### Create application using Dockerfile
+
+```bash
+git clone https://github.com/startxfr/sxapi-example.git
+cd sxapi-example
+docker build . -t sxapi-example
+docker run -p 8080:8080 sxapi-example
+
+## Running this example using s2i
+
+### Requirements
+
+Install and configure s2i tools. If you don't have it yet, please follow [source-to-image](https://github.com/openshift/source-to-image)
+installation guide for [Linux](https://github.com/openshift/source-to-image#for-linux), [Windows](https://github.com/openshift/source-to-image#for-Windows)
+or [MacOS](https://github.com/openshift/source-to-image#for-mac).
+
+### Create application using s2i build
+
+```bash
+s2i build https://github.com/startxfr/sxapi-example startxfr/sxapi sxapi-example
+docker run -p 8080:8080 sxapi-example
+```
+```
+
+## Running this example using openshift
+
+### Requirements
 
 - Configure an openshift cluster with a minimum v3.5 release. 
   User must be a `system:authenticated` user with at least default associated roles (default behavior). 
@@ -23,31 +58,31 @@ how to create your own microservice endpoints winthin a minute.
 # <openshift_api> Your openshift master API hostname (ex: https://mymaster.openshift.example.com:8443)
 oc login -u <login> -p <pwd> <openshift_api>
 ```
-- Create a project for this application
+- Create a project for this application example
 ```bash
 # <project_name> The project name
 oc new-project <project_name>
 ```
 
-#### Create application using the build template
+### Create application using the build template
 
 ```bash
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-example/master/openshift-template-build.json \
-   -p APP_NAME=sxapi1 \
-   -p APP_TYPE=example \
-   -p SOURCE_BRANCH=master \
-   -p WEBHOOK_TOKEN=sxapi-example-e7h91Yka4p7qD24 | \
+   -v APP_NAME=sxapi1 \
+   -v APP_TYPE=example \
+   -v SOURCE_BRANCH=master \
+   -v WEBHOOK_TOKEN=sxapi-example-e7h91Yka4p7qD24 | \
 oc create -f -
 ```
 
-#### Create application using the pipeline template
+### Create application using the pipeline template
 
 ```bash
 oc process -f https://raw.githubusercontent.com/startxfr/sxapi-example/master/openshift-template-pipeline.json \
-   -p APP_NAME=sxapi2 \
-   -p APP_TYPE=example \
-   -p SOURCE_BRANCH=master \
-   -p WEBHOOK_TOKEN=sxapi-example-f5H34pASlaiZ27c | \
+   -v APP_NAME=sxapi2 \
+   -v APP_TYPE=example \
+   -v SOURCE_BRANCH=master \
+   -v WEBHOOK_TOKEN=sxapi-example-f5H34pASlaiZ27c | \
 oc create -f -
 ```
 
