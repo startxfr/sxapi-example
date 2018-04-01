@@ -25,7 +25,7 @@ how to create your own microservice endpoints winthin a minute.
 ```bash
 git clone https://github.com/startxfr/sxapi-example.git
 cd sxapi-example
-docker build . -t sxapi-example
+docker build -t sxapi-example .
 docker run -p 8080:8080 sxapi-example
 
 ## Running this example using s2i
