@@ -34,14 +34,14 @@
                 },
                 "annotations": {
                     "openshift.io/generated-by": "STARTX",
-                    "pipeline.alpha.openshift.io/uses": "[{\"name\": \"${APP_NAME}\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"}]"
+                    "pipeline.alpha.openshift.io/uses": "[{\"name\": \"${APP_NAME}-test\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"},{\"name\": \"${APP_NAME}-run\", \"namespace\": \"\", \"kind\": \"DeploymentConfig\"}]"
                 }
             },
             "spec": {
                 "strategy": {
                     "type": "JenkinsPipeline",
                     "jenkinsPipelineStrategy": {
-                        "jenkinsfile": "try { timeout(time: 10, unit: 'MINUTES') { node('nodejs') { stage('build') { openshiftBuild(buildConfig: '${APP_NAME}', showBuildLogs: 'true') }; stage('deploy') { openshiftDeploy(deploymentConfig: '${APP_NAME}') } } } } catch (err) { echo \"in catch block\"; echo \"Caught: ${err}\"; currentBuild.result = 'FAILURE'; throw err }   "
+                        "jenkinsfile": "try { timeout(time: 10, unit: 'MINUTES') { node('nodejs') { stage('Construction') { openshiftBuild(buildConfig: '${APP_NAME}', showBuildLogs: 'true'); }; stage('Test') { openshiftDeploy(deploymentConfig: '${APP_NAME}-test'); }; stage('Approbation'){ input 'Valider le deploiement en production ?'; }; stage('Production') { openshiftDeploy(deploymentConfig: '${APP_NAME}-run'); }; } } } catch (err) { echo \"in catch block\"; echo \"Caught: ${err}\"; currentBuild.result = 'FAILURE';  throw err; }"
                     }
                 },
                 "triggers": [
@@ -210,11 +210,11 @@
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
-                "name": "${APP_NAME}",
+                "name": "${APP_NAME}-test",
                 "generation": 2,
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "${APP_NAME}",
+                    "app": "${APP_NAME}-test",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
                     "template": "sxapi-example-template-pipeline"
@@ -241,7 +241,7 @@
                         "imageChangeParams": {
                             "automatic": false,
                             "containerNames": [
-                                "${APP_NAME}"
+                                "${APP_NAME}-test"
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
@@ -253,21 +253,21 @@
                         "type": "ConfigChange"
                     }
                 ],
-                "replicas": 2,
+                "replicas": 1,
                 "test": false,
                 "selector": {
-                    "app": "${APP_NAME}",
-                    "deploymentconfig": "${APP_NAME}"
+                    "app": "${APP_NAME}-test",
+                    "deploymentconfig": "${APP_NAME}-test"
                 },
                 "template": {
                     "metadata": {
                         "creationTimestamp": null,
                         "labels": {
-                            "app": "${APP_NAME}",
+                            "app": "${APP_NAME}-test",
                             "type": "${APP_TYPE}",
                             "provider": "startx",
                             "template": "sxapi-example-template-pipeline",
-                            "deploymentconfig": "${APP_NAME}"
+                            "deploymentconfig": "${APP_NAME}-test"
                         },
                         "annotations": {
                             "openshift.io/generated-by": "STARTX"
@@ -276,7 +276,7 @@
                     "spec": {
                         "containers": [
                             {
-                                "name": "${APP_NAME}",
+                                "name": "${APP_NAME}-test",
                                 "image": " ",
                                 "command": [
                                     "npm",
@@ -320,7 +320,7 @@
             },
             "status": {
                 "observedGeneration": 2,
-                "replicas": 2,
+                "replicas": 1,
                 "updatedReplicas": 1,
                 "availableReplicas": 1
             }
@@ -329,16 +329,15 @@
             "kind": "Service",
             "apiVersion": "v1",
             "metadata": {
-                "name": "${APP_NAME}",
+                "name": "${APP_NAME}-test",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "${APP_NAME}",
+                    "app": "${APP_NAME}-test",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
                     "template": "sxapi-example-template-pipeline"
                 },
                 "annotations": {
-                    "service.alpha.openshift.io/dependencies": "[{\"name\": \"${NAME}\", \"namespace\": \"\", \"kind\": \"Service\"}]",
                     "openshift.io/generated-by": "STARTX"
                 }
             },
@@ -351,8 +350,8 @@
                     }
                 ],
                 "selector": {
-                    "app": "${APP_NAME}",
-                    "deploymentconfig": "${APP_NAME}"
+                    "app": "${APP_NAME}-test",
+                    "deploymentconfig": "${APP_NAME}-test"
                 },
                 "type": "ClusterIP",
                 "sessionAffinity": "None"
@@ -365,10 +364,10 @@
             "kind": "Route",
             "apiVersion": "v1",
             "metadata": {
-                "name": "${APP_NAME}",
+                "name": "${APP_NAME}-test",
                 "creationTimestamp": null,
                 "labels": {
-                    "app": "${APP_NAME}",
+                    "app": "${APP_NAME}-test",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
                     "template": "sxapi-example-template-pipeline"
@@ -381,7 +380,199 @@
                 "host": "${APP_DOMAIN}",
                 "to": {
                     "kind": "Service",
-                    "name": "${APP_NAME}",
+                    "name": "${APP_NAME}-test",
+                    "weight": 100
+                }
+            },
+            "status": {
+                "ingress": [
+                    {
+                        "routerName": "router",
+                        "conditions": [
+                            {
+                                "type": "Admitted",
+                                "status": "True"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APP_NAME}-run",
+                "generation": 2,
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "${APP_NAME}-run",
+                    "type": "${APP_TYPE}",
+                    "provider": "startx",
+                    "template": "sxapi-example-template-pipeline"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Rolling",
+                    "rollingParams": {
+                        "updatePeriodSeconds": 1,
+                        "intervalSeconds": 1,
+                        "timeoutSeconds": 30,
+                        "maxUnavailable": "25%",
+                        "maxSurge": "25%"
+                    },
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": false,
+                            "containerNames": [
+                                "${APP_NAME}-run"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "${APP_NAME}:latest"
+                            }
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 2,
+                "test": false,
+                "selector": {
+                    "app": "${APP_NAME}-run",
+                    "deploymentconfig": "${APP_NAME}-run"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "app": "${APP_NAME}-run",
+                            "type": "${APP_TYPE}",
+                            "provider": "startx",
+                            "template": "sxapi-example-template-pipeline",
+                            "deploymentconfig": "${APP_NAME}-run"
+                        },
+                        "annotations": {
+                            "openshift.io/generated-by": "STARTX"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "${APP_NAME}-run",
+                                "image": " ",
+                                "command": [
+                                    "npm",
+                                    "start"
+                                ],
+                                "resources": {},
+                                "livenessProbe": {
+                                    "httpGet": {
+                                        "path": "/health",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 5,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 10,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "readinessProbe": {
+                                    "httpGet": {
+                                        "path": "/health",
+                                        "port": 8080,
+                                        "scheme": "HTTP"
+                                    },
+                                    "initialDelaySeconds": 6,
+                                    "timeoutSeconds": 1,
+                                    "periodSeconds": 12,
+                                    "successThreshold": 1,
+                                    "failureThreshold": 3
+                                },
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "Always"
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "terminationGracePeriodSeconds": 30,
+                        "dnsPolicy": "ClusterFirst",
+                        "securityContext": {}
+                    }
+                }
+            },
+            "status": {
+                "observedGeneration": 2,
+                "replicas": 2,
+                "updatedReplicas": 1,
+                "availableReplicas": 1
+            }
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APP_NAME}-run",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "${APP_NAME}-run",
+                    "type": "${APP_TYPE}",
+                    "provider": "startx",
+                    "template": "sxapi-example-template-pipeline"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "protocol": "TCP",
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "app": "${APP_NAME}-run",
+                    "deploymentconfig": "${APP_NAME}-run"
+                },
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APP_NAME}-run",
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "${APP_NAME}-run",
+                    "type": "${APP_TYPE}",
+                    "provider": "startx",
+                    "template": "sxapi-example-template-pipeline"
+                },
+                "annotations": {
+                    "openshift.io/generated-by": "STARTX"
+                }
+            },
+            "spec": {
+                "host": "${APP_DOMAIN}",
+                "to": {
+                    "kind": "Service",
+                    "name": "${APP_NAME}-run",
                     "weight": 100
                 }
             },
