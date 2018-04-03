@@ -51,7 +51,7 @@
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/sxapi:latest"
+                            "name": "startx/sxapi:0.2.7"
                         }
                     }
                 ]
@@ -329,7 +329,8 @@
                     "template": "sxapi-example-template-build"
                 },
                 "annotations": {
-                    "openshift.io/generated-by": "STARTX"
+                    "openshift.io/generated-by": "STARTX",
+                    "haproxy.router.openshift.io/balance": "roundrobin"
                 }
             },
             "spec": {
