@@ -30,7 +30,7 @@
                 },
                 "labels": {
                     "base-image": "sxapi",
-                    "app": "${APP_NAME}",
+                    "app": "sxapi",
                     "type": "${APP_TYPE}",
                     "provider": "startx",
                     "template": "sxapi-example-template-build"
@@ -46,6 +46,22 @@
                             "iconClass": "icon-nodejs",
                             "tags": "builder,startx,alpine,nodejs,sxapi-latest",
                             "supports": "sxapi:latest,nodejs,http",
+                            "version": "latest",
+                            "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "startx/sxapi:latest"
+                        }
+                    },
+                    {
+                        "name": "latest",
+                        "annotations": {
+                            "openshift.io/display-name": "S2I Startx SXAPI framework (0.2.7)",
+                            "description": "Builder for Simple and eXtensible API framework based on alpine (0.2.7)",
+                            "iconClass": "icon-nodejs",
+                            "tags": "builder,startx,alpine,nodejs,sxapi-0.2.7",
+                            "supports": "sxapi:0.2.7,nodejs,http",
                             "version": "latest",
                             "sampleRepo": "https://github.com/startxfr/sxapi-example.git"
                         },
