@@ -3,7 +3,7 @@
 Example of a micro-service application using startx sxapi s2i builder [startx/sxapi](https://hub.docker.com/r/startx/sxapi) (using [source-to-image](https://github.com/openshift/source-to-image)).
 See [using sxapi builder](https://github.com/startxfr/sxapi-core/blob/master/docs/guides/USE_docker.md#using-openshift) to learn on how to build this example.
 
-The easyest way to start building you own API resource is to fork this repository and start to personalize `sxapi.json`. 
+The easyest way to start building you own API resource is to fork this repository and start to personalize `sxapi.yaml`. 
 Follow the [sxapi configuration guide](https://github.com/startxfr/sxapi-core/blob/master/docs/guides/2.Configure.md) to learn
 how to create your own microservice endpoints winthin a minute.
 
@@ -110,7 +110,7 @@ oc new-project <project_name>
 ### Create application using the build template
 
 ```bash
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-example/master/openshift-template-build.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-example/master/openshift-template-build.yaml \
    -v APP_NAME=sxapi1 \
    -v APP_TYPE=example \
    -v SOURCE_BRANCH=master \
@@ -146,7 +146,7 @@ oc create -f -
 ### Create application using the pipeline template
 
 ```bash
-oc process -f https://raw.githubusercontent.com/startxfr/sxapi-example/master/openshift-template-pipeline.json \
+oc process -f https://raw.githubusercontent.com/startxfr/sxapi-example/master/openshift-template-pipeline.yaml \
    -v APP_NAME=sxapi2 \
    -v APP_TYPE=example \
    -v SOURCE_BRANCH=master \
