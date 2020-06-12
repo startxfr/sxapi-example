@@ -19,7 +19,7 @@ server:
         <html>
         <head><title>Application {{name}}</title></head>
         <link rel="stylesheet" href="https://goo.gl/4kFNLH">
-        <body><div class="container">
+        <body style="background-color:#ccf"><div class="container">
         <h1><span class="glyphicon glyphicon-eye-open"></span> Your API {{name}} is
         live !</h1>
         <div class="alert alert-success" role="alert"><p>This API is {{description}}
