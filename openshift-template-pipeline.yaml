@@ -89,20 +89,20 @@ objects:
         sampleRepo: https://github.com/startxfr/sxapi-example.git
       from:
         kind: DockerImage
-        name: startx/sxapi:0.3.49
-    - name: 0.3.49
+        name: startx/sxapi:latest
+    - name: v0.3.57
       annotations:
-        openshift.io/display-name: S2I Startx SXAPI framework (0.3.49)
+        openshift.io/display-name: S2I Startx SXAPI framework (0.3.57)
         description: Builder for Simple and eXtensible API framework based on alpine
-          (0.3.49)
+          (0.3.57)
         iconClass: icon-nodejs
-        tags: builder,startx,alpine,nodejs,sxapi-0.3.49
-        supports: sxapi:0.3.49,nodejs,http
+        tags: builder,startx,alpine,nodejs,sxapi-0.3.57
+        supports: sxapi:0.3.57,nodejs,http
         version: latest
         sampleRepo: https://github.com/startxfr/sxapi-example.git
       from:
         kind: DockerImage
-        name: startx/sxapi:0.3.49
+        name: startx/sxapi:0.3.57
 - kind: ImageStream
   apiVersion: v1
   metadata:
