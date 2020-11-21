@@ -12,9 +12,9 @@ metadata:
     openshift.io/long-description: This template provides a full sxapi micro-service
       example. Ready to use in openshift to create a build and deployement config.
       For more information about using this image, including OpenShift considerations,
-      see https://github.com/startxfr/sxapi-core/blob/master/README.md.
+      see https://sxapi-core.readthedocs.io.
     openshift.io/provider-display-name: STARTX
-    openshift.io/documentation-url: https://github.com/startxfr/sxapi-core/blob/master/README.md
+    openshift.io/documentation-url: https://sxapi-core.readthedocs.io
     openshift.io/support-url: https://github.com/startxfr/sxapi-core/issues/new
 message: Your building context to deploy application ${APP_NAME} have been created
   in your project. You can use openshift console to monitor it building and deployement
