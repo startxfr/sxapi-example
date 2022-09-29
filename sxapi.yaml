@@ -1,7 +1,7 @@
 ---
 name: sxapi-example
 description: sxapi example
-version: "0.0.2"
+version: "0.0.1"
 debug: true
 resources:
   serviceinfo-sample:
