@@ -1,4 +1,4 @@
-FROM startx/sxapi:0.3.57
+FROM startx/sxapi:0.3.66
 
 ENV SX_ID="startx/sxapi-example" \
     SX_NAME="Startx SXAPI Example" \
